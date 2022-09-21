@@ -4,6 +4,7 @@ const shippingFreePrice = 300;
 
 //? Kullanıcı browser'ı kapatınca sessionStorage'dekiler gider. LocalStorage'dakiler kalır
 window.addEventListener("load", ()=> {
+    calculateCardPrice();
     //set items to LocalStorage
     localStorage.setItem("taxRate", taxRate);
     localStorage.setItem("shippingPrice", shippingPrice);
@@ -29,7 +30,7 @@ productsDiv.addEventListener("click", (event)=>{
             calculateCardPrice();
         }
         else{
-            if(confirm("Product will be removed???")){
+            if(confirm(`${event.target.parentElement.parentElement.querySelector("h2").innerText} will be removed???`)){
                 //remove
                 event.target.parentElement.parentElement.parentElement.remove();
                 calculateCardPrice();
@@ -77,7 +78,12 @@ const calculateCardPrice = () => {
     // console.log(subtotal);
     const taxPrice = subtotal * localStorage.getItem("taxRate");
 
-    const shippingPrice = (subtotal > 0 && subtotal < localStorage.getItem("shippingFreePrice") ? localStorage.getItem("shippingPrice") : 0);
+    const shippingPrice = parseFloat((subtotal > 0 && subtotal < localStorage.getItem("shippingFreePrice") ? localStorage.getItem("shippingPrice") : 0));
 
     console.log(shippingPrice);
+
+    document.querySelector("#cart-subtotal").lastElementChild.innerText = subtotal.toFixed(2);
+    document.querySelector("#cart-tax p:nth-child(2)").innerText = taxPrice.toFixed(2);
+    document.querySelector("#cart-shipping").children[1].innerText = shippingPrice.toFixed(2);
+    document.querySelector("#cart-total").lastElementChild.innerText = (subtotal + taxPrice + shippingPrice).toFixed(2);
 }
